@@ -1,0 +1,61 @@
+{% extends "todolist_app/template.html" %}
+
+{% block title %}Todolist{% endblock %}
+
+{% block content %}
+
+<h1 class="display-3 text-center">TODOLIST</h1>
+<a class="btn btn-primary" href="{% url 'todolist_app:add' %}" role="button">Add new todo</a>
+<hr>
+    <div class="text-right">SORT
+        <div class="btn-group">
+            <a href="{% url 'todolist_app:index' %}?sort=pub_date"><button class="btn btn-default">Date desc</button></a>
+            <a href="{% url 'todolist_app:index' %}?sort=-pub_date"><button class="btn btn-default">Date asc</button></a>
+            <a href="{% url 'todolist_app:index' %}?sort=priority"><button class="btn btn-default">Priority desc</button></a>
+            <a href="{% url 'todolist_app:index' %}?sort=-priority"><button class="btn btn-default">Priority asc</button></a>
+            <a href="{% url 'todolist_app:index' %}?sort=status"><button class="btn btn-default">Status desc</button></a>
+            <a href="{% url 'todolist_app:index' %}?sort=-status"><button class="btn btn-default">Status asc</button></a>
+        </div>
+    </div>
+<hr>
+<table class="table">
+ <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Todo</th>
+      <th scope="col">Priority</th>
+      <th scope="col">Status</th>
+      <th scope="col">Date published</th>
+      <th scope="col">Delete</th>
+    </tr>
+  </thead>
+<tbody>
+{% for todo in todo_list %}
+    <tr>
+        <form method="POST" action="{% url 'todolist_app:delete' todo.id %}">
+            {% csrf_token %}
+            <th scope="row">{{ forloop.counter }}</th>
+            <td><a href="{% url 'todolist_app:detail' todo.id %}">{{ todo.title }}</a></td>
+            <td>
+                <div class="btn-group">
+                    <span class="badge badge-success">
+                        {{ todo.get_priority_display }}
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <span class="badge badge-primary">
+                        {{ todo.get_status_display }}
+                    </span>
+
+                </div>
+            </td>
+            <td>{{ todo.pub_date }}</td>
+            <td><button class="btn btn-danger" type="submit" role="button">Delete</button></td>
+        </form>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}
